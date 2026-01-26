@@ -1,0 +1,114 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ff7a18, #ffb347);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Simula un teléfono */
+.phone {
+  width: 360px;
+  min-height: 640px;
+  background: #fff;
+  border-radius: 28px;
+  padding: 24px 20px;
+  box-shadow: 0 25px 40px rgba(0,0,0,.3);
+  position: relative;
+}
+
+/* Título */
+h1 {
+  text-align: center;
+  margin-top: 30px;
+  font-weight: 600;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  margin: 25px 0;
+  border-radius: 20px;
+  background: #f2f2f2;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: none;
+  font-weight: 600;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #4CAF50;
+  color: white;
+}
+
+/* Formularios */
+.box input,
+.box select {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.box button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #4CAF50;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.box button:hover {
+  opacity: 0.9;
+}
+
+.msg {
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Bienvenida */
+.welcome {
+  background: linear-gradient(135deg, #4CAF50, #2196F3);
+  color: white;
+  padding: 16px;
+  border-radius: 18px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+/* Zona protegida */
+pre {
+  background: #111;
+  color: #0f0;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  overflow-x: auto;
+}
+
+.hidden {
+  display: none;
+}
+
+.danger {
+  background: #e53935;
+}

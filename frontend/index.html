@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Autenticación</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="phone">
+    <h1>Sistema de Autenticación</h1>
+    <p style="text-align:center; color:#888;">
+  Sistema de Registro & Login
+</p>
+    <p class="subtitle">Registro · Login · JWT · Zona protegida</p>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button id="tabRegister" class="tab active" onclick="showTab('register')">Registro</button>
+      <button id="tabLogin" class="tab" onclick="showTab('login')">Login</button>
+    </div>
+
+    <!-- REGISTRO -->
+    <div id="registerBox" class="box">
+      <input id="r_name" placeholder="Nombre" />
+      <input id="r_email" type="email" placeholder="Email" />
+      <input id="r_pass" type="password" placeholder="Password" />
+      <select id="r_role">
+        <option value="user">Usuario</option>
+        <option value="admin">Administrador</option>
+      </select>
+      <button onclick="registerUser()">Registrarse</button>
+      <p id="r_msg" class="msg"></p>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginBox" class="box hidden">
+      <input id="l_email" type="email" placeholder="Email" />
+      <input id="l_pass" type="password" placeholder="Password" />
+      <button onclick="loginUser()">Iniciar sesión</button>
+      <p id="l_msg" class="msg"></p>
+    </div>
+
+    <!-- BIENVENIDA -->
+    <div id="welcomeBox" class="welcome hidden">
+      <h3 id="welcomeTitle"></h3>
+      <p id="welcomeSubtitle"></p>
+    </div>
+
+    <hr />
+
+    <!-- ZONA PROTEGIDA -->
+    <h2>Zona protegida</h2>
+    <button onclick="getProtected()">Ver zona protegida</button>
+    <button class="danger" onclick="logout()">Logout</button>
+
+    <p id="p_msg" class="msg"></p>
+    <pre id="protectedBox"></pre>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
