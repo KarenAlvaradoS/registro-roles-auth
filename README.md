@@ -1,47 +1,89 @@
-Proyecto de Autenticación con Roles y JWT
+Proyecto: Autenticación con Roles y JWT
 
-Este proyecto consiste en el desarrollo de un sistema completo de autenticación de usuarios que permite el registro, inicio de sesión, manejo de roles (admin y user) y acceso a zonas protegidas mediante el uso de JSON Web Tokens (JWT). El sistema está diseñado bajo una arquitectura cliente-servidor y cuenta con tres partes principales: backend, frontend web y aplicación móvil.
+Este proyecto implementa un sistema de autenticación completo con registro, login, roles (admin/user), persistencia de sesión, ruta protegida y cierre de sesión. Incluye backend con Node.js/Express, frontend web y app móvil con Expo (React Native). El sistema está listo para demostración en clase.
 
-El objetivo principal del proyecto es demostrar el funcionamiento de la autenticación basada en tokens, el control de acceso por roles y el consumo de una API REST desde diferentes clientes.
+A) Creación y estructura del proyecto
+El repositorio está organizado en tres módulos principales: backend, frontend web y app móvil. En el backend se usa una estructura por carpetas (controllers, routes, models, middleware, config) para separar responsabilidades. El frontend web consume la API REST. La app móvil (Expo) consume la misma API y guarda la sesión en el dispositivo.
 
-Tecnologías utilizadas
+Estructura de carpetas (resumen)
 
-En el backend se utilizó Node.js junto con Express para la creación del servidor y la API REST. Para la persistencia de datos se empleó MySQL como base de datos y Sequelize como ORM, lo que permite definir modelos y relaciones de manera sencilla. Las contraseñas de los usuarios se almacenan de forma segura utilizando bcryptjs para el cifrado. La autenticación se maneja mediante JSON Web Tokens (JWT), los cuales se generan al iniciar sesión y se utilizan para proteger rutas del sistema.
+backend/src: servidor Express, rutas, controladores, modelos, middleware
 
-El frontend web fue desarrollado utilizando HTML, CSS y JavaScript puro. Desde este frontend se consumen los endpoints del backend para realizar el registro y el login de usuarios, mostrando la información correspondiente según el rol.
+frontend: interfaz web (index.html, style.css, app.js)
 
-La aplicación móvil fue desarrollada con React Native utilizando Expo. En esta app se implementa el registro, el inicio de sesión, la selección de rol y la visualización de la sesión activa. El token JWT y los datos del usuario se almacenan localmente mediante AsyncStorage, lo que permite mantener la sesión incluso al cerrar la aplicación.
+app-movil: aplicación móvil Expo (React Native)
 
-Funcionalidades del sistema
+B) Configuración de variables de entorno (.env)
+El backend usa un archivo .env para guardar configuraciones sensibles como la conexión a MySQL y la clave JWT. Por seguridad, el .env no se sube a GitHub. En su lugar se incluye un archivo de ejemplo.
 
-El sistema permite registrar usuarios ingresando nombre, correo electrónico, contraseña y seleccionando un rol (admin o user). Durante el registro, la contraseña es cifrada antes de guardarse en la base de datos y el rol seleccionado se asocia correctamente al usuario.
+Crear el .env en backend usando el ejemplo
+En la carpeta backend existe un archivo backend/.env.example. Copiarlo y renombrarlo a .env.
+Variables requeridas: PORT, DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME, JWT_SECRET.
 
-El inicio de sesión valida las credenciales del usuario y, en caso de ser correctas, genera un token JWT que incluye información básica como el id del usuario y su rol. Este token se utiliza posteriormente para acceder a rutas protegidas del backend.
+Configurar la URL base de la API en los clientes
+En el frontend web y la app móvil se utiliza una variable API_URL para consumir el backend. Para pruebas en celular se recomienda usar una URL accesible como ngrok o la IP local del computador (por ejemplo http://192.168.x.x:4000
+). No usar localhost desde el celular porque localhost en el celular apunta al propio dispositivo.
 
-El sistema maneja roles, permitiendo diferenciar entre usuarios administradores y usuarios normales. Esta información se devuelve al frontend y a la app móvil después del login y se muestra en la interfaz.
+C) Base de datos, tablas y relación Usuarios-Roles
+El modelo mínimo incluye Usuarios y Roles. Cada usuario pertenece a un rol (admin o user). En la base de datos la tabla Users contiene una clave foránea RoleId que referencia a Roles. El backend crea/actualiza las tablas automáticamente mediante Sequelize (sequelize.sync) al iniciar el servidor y también crea los roles base si no existen (admin y user).
 
-El backend cuenta con rutas protegidas que solo pueden ser accedidas si se envía un token válido en el encabezado Authorization, siguiendo el formato Bearer TOKEN.
+D) Implementación de funcionalidades principales
 
-Estructura del proyecto
+Registro de usuario con selección de rol
 
-El proyecto se organiza en una carpeta principal que contiene tres subcarpetas importantes. La carpeta backend contiene todo el código del servidor, incluyendo controladores, modelos, rutas, middleware, configuración de la base de datos y los archivos principales del servidor. La carpeta frontend contiene los archivos necesarios para la interfaz web, como el archivo HTML principal, los estilos CSS y el archivo JavaScript que consume la API. La carpeta app-movil contiene el proyecto de Expo para la aplicación móvil, incluyendo componentes, assets y configuración del proyecto. En la raíz del proyecto se encuentra el archivo README que documenta todo el sistema.
+El registro de usuarios se realiza mediante el endpoint POST /api/auth/register.
+El body de la petición debe incluir los campos name, email, password y roleName.
+El campo roleName es obligatorio y define el rol del usuario (admin o user).
+El backend valida que el rol exista antes de crear el usuario y lo asocia correctamente en la base de datos.
+Endpoint: POST /api/auth/register
+Body requerido: name, email, password, roleName (admin o user). El backend valida el rol y lo asocia al usuario.
 
-Ejecución del proyecto
+Inicio de sesión (login)
+Endpoint: POST /api/auth/login
+Body: email, password
+Respuesta: token JWT y datos del usuario incluyendo role.
 
-Para ejecutar el backend es necesario contar con MySQL activo y configurar correctamente el archivo de variables de entorno (.env) con los datos de conexión a la base de datos y la clave secreta para JWT. Una vez configurado, el servidor se inicia ejecutando el archivo server.js. Al iniciarse correctamente, la API queda disponible para ser consumida por el frontend web y la aplicación móvil.
+Persistencia de sesión y control de acceso a ruta protegida
+El token se guarda en el cliente (localStorage en web y AsyncStorage en móvil). Para acceder a la ruta protegida se envía el token en el header Authorization como Bearer TOKEN.
+Ejemplo: Authorization: Bearer <token>
 
-El frontend web se ejecuta levantando un servidor estático dentro de la carpeta frontend y luego accediendo desde el navegador. Desde esta interfaz se pueden probar el registro y el login de usuarios utilizando el backend.
+Cierre de sesión y restricciones
+El logout elimina el token guardado. Si no hay token, se bloquea el acceso a la vista o ruta protegida y se muestra un mensaje indicando que el usuario debe iniciar sesión.
 
-La aplicación móvil se ejecuta utilizando Expo. Al iniciar el proyecto con Expo, se genera un código QR que se puede escanear desde un dispositivo móvil con la aplicación Expo Go instalada. Para que la app móvil pueda comunicarse con el backend, se utiliza una URL accesible desde el celular, como una dirección IP local o un túnel generado con ngrok.
+Cómo ejecutar el proyecto
 
-Endpoints principales
+Backend
 
-El backend expone un endpoint de registro que recibe los datos del usuario junto con el rol seleccionado. También expone un endpoint de login que devuelve un token JWT y los datos del usuario autenticado. Además, existen rutas protegidas que requieren el envío del token en el encabezado de la petición para poder ser accedidas.
+Tener MySQL activo
 
-Notas importantes
+Configurar backend/.env
 
-La carpeta .expo es generada automáticamente por Expo y contiene información local del entorno de desarrollo, por lo que no debe subirse al repositorio. El archivo .env contiene datos sensibles como credenciales de la base de datos y claves secretas, por lo que tampoco debe compartirse ni subirse a GitHub. Los roles admin y user deben existir previamente en la base de datos para que el registro funcione correctamente.
+Instalar dependencias y ejecutar servidor
+Comandos (desde la carpeta backend): npm install y luego (desde backend/src): node server.js
+El backend corre por defecto en el puerto 4000.
 
-Autoría
+Frontend Web
 
-Proyecto desarrollado por Estefania como parte de un trabajo académico sobre autenticación, control de acceso por roles y consumo de APIs REST con JWT.
+Entrar a la carpeta frontend
+
+Levantar servidor estático (por ejemplo npx http-server)
+
+Abrir la URL que muestre la consola
+
+App móvil (Expo)
+
+Entrar a la carpeta app-movil
+
+Instalar dependencias: npm install
+
+Ejecutar: npx expo start
+
+Escanear QR con Expo Go
+
+Configurar API_URL para que apunte al backend accesible desde el celular (ngrok o IP local)
+
+Notas
+
+No se suben node_modules ni .expo ni .env al repositorio (están ignorados).
+
+Los roles admin y user deben existir; el backend los crea automáticamente al iniciar.
