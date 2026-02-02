@@ -1,0 +1,10 @@
+{
+  "name": "registro-roles-auth-root",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd app-movil && npx expo start --port 8082\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

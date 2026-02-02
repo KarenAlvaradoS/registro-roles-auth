@@ -1,67 +1,56 @@
-import React, { useState } from "react";
-import { View, Text, Pressable, Alert } from "react-native";
+import { View, Text, Pressable } from "react-native";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = "https://haematogenous-lorene-diffusive.ngrok-free.dev";
-const PROTECTED_PATH = "/api/protected";
+type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+};
 
 export default function ExploreScreen() {
-  const [data, setData] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-  const cargarZona = async () => {
-    const token = await AsyncStorage.getItem("token");
-
-    if (!token) {
-      Alert.alert("Sin sesión", "Primero inicia sesión en Home.");
-      return;
-    }
-
-    try {
-      const res = await fetch(`${API_URL}${PROTECTED_PATH}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const json = await res.json();
-
-      if (!res.ok) {
-        Alert.alert("Error", json.message || "No autorizado");
-        return;
-      }
-
-      setData(json);
-    } catch {
-      Alert.alert("Error", "No se pudo conectar");
-    }
-  };
+  useEffect(() => {
+    (async () => {
+      const u = await AsyncStorage.getItem("user");
+      setUser(u ? JSON.parse(u) : null);
+    })();
+  }, []);
 
   return (
-    <View style={{ flex: 1, padding: 20, justifyContent: "center" }}>
-      <Text style={{ fontSize: 22, fontWeight: "800", marginBottom: 20 }}>
-        🔐 Zona protegida
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+        backgroundColor: "#F3F4F6",
+      }}
+    >
+      <Text style={{ fontSize: 24, fontWeight: "800", marginBottom: 10 }}>
+        Explore 🔍
       </Text>
 
-      <Pressable
-        onPress={cargarZona}
-        style={{
-          backgroundColor: "#2563EB",
-          padding: 14,
-          borderRadius: 12,
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ color: "white", fontWeight: "700" }}>
-          Entrar a la zona protegida
-        </Text>
-      </Pressable>
+      <Text style={{ textAlign: "center", marginBottom: 20 }}>
+        Esta es una pantalla secundaria accesible solo después de iniciar sesión.
+      </Text>
 
-      {data && (
-        <Text style={{ marginTop: 20 }}>
-          Respuesta del servidor:
-          {"\n"}
-          {JSON.stringify(data, null, 2)}
-        </Text>
+      {user && (
+        <View
+          style={{
+            backgroundColor: "white",
+            padding: 16,
+            borderRadius: 12,
+            width: "100%",
+          }}
+        >
+          <Text style={{ fontWeight: "800" }}>Usuario actual</Text>
+          <Text>Nombre: {user.name}</Text>
+          <Text>Email: {user.email}</Text>
+          <Text>Rol: {user.role}</Text>
+        </View>
       )}
     </View>
   );
