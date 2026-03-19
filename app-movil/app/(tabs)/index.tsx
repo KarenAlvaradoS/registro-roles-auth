@@ -2,7 +2,7 @@ import { View, Text, Pressable, Alert } from "react-native";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { resetOnboarding } from "../../utils/onboarding"; // ✅ NUEVO
+import { resetOnboarding } from "../../utils/onboarding";
 
 type User = {
   id: number;
@@ -31,7 +31,6 @@ export default function TabsHome() {
     router.replace("/login");
   };
 
-  // ✅ NUEVO: volver a ver onboarding
   const seeOnboardingAgain = async () => {
     await resetOnboarding();
     router.replace("/onboarding/welcome");
@@ -42,15 +41,40 @@ export default function TabsHome() {
   }, []);
 
   return (
-    <View style={{ flex: 1, padding: 18, justifyContent: "center", backgroundColor: "#F59E0B" }}>
-      <View style={{ backgroundColor: "white", borderRadius: 18, padding: 18 }}>
-        <Text style={{ fontSize: 24, fontWeight: "800", textAlign: "center" }}>
+    <View
+      style={{
+        flex: 1,
+        padding: 18,
+        justifyContent: "center",
+        backgroundColor: "#F59E0B",
+      }}
+    >
+      <View
+        style={{
+          backgroundColor: "white",
+          borderRadius: 18,
+          padding: 18,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "800",
+            textAlign: "center",
+          }}
+        >
           Zona protegida 🔐
         </Text>
 
         {!token || !user ? (
           <>
-            <Text style={{ marginTop: 14, textAlign: "center", color: "#EF4444" }}>
+            <Text
+              style={{
+                marginTop: 14,
+                textAlign: "center",
+                color: "#EF4444",
+              }}
+            >
               No hay sesión activa
             </Text>
 
@@ -64,10 +88,11 @@ export default function TabsHome() {
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: "white", fontWeight: "800" }}>Ir a Login</Text>
+              <Text style={{ color: "white", fontWeight: "800" }}>
+                Ir a Login
+              </Text>
             </Pressable>
 
-            {/* ✅ NUEVO: también puedes verlo aunque no haya sesión */}
             <Pressable
               onPress={seeOnboardingAgain}
               style={{
@@ -85,17 +110,61 @@ export default function TabsHome() {
           </>
         ) : (
           <>
-            <View style={{ marginTop: 14, padding: 12, borderRadius: 12, backgroundColor: "#F3F4F6" }}>
+            <View
+              style={{
+                marginTop: 14,
+                padding: 12,
+                borderRadius: 12,
+                backgroundColor: "#F3F4F6",
+              }}
+            >
               <Text style={{ fontWeight: "800" }}>Sesión activa</Text>
               <Text>Nombre: {user.name}</Text>
               <Text>Email: {user.email}</Text>
               <Text style={{ fontWeight: "800" }}>Rol: {user.role}</Text>
-              <Text style={{ marginTop: 6, fontSize: 12, opacity: 0.6 }}>
+              <Text
+                style={{
+                  marginTop: 6,
+                  fontSize: 12,
+                  opacity: 0.6,
+                }}
+              >
                 Token guardado: Sí ✅
               </Text>
             </View>
 
-            {/* ✅ NUEVO: botón onboarding */}
+            {/* 🔥 BOTÓN CÁMARA */}
+            <Pressable
+              onPress={() => router.push("/camera" as any)}
+              style={{
+                marginTop: 12,
+                backgroundColor: "#7C3AED",
+                padding: 14,
+                borderRadius: 12,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "white", fontWeight: "800" }}>
+                📷 Ir a Cámara
+              </Text>
+            </Pressable>
+
+            {/* 🔥 BOTÓN UBICACIÓN */}
+            <Pressable
+              onPress={() => router.push("/location" as any)}
+              style={{
+                marginTop: 12,
+                backgroundColor: "#16A34A",
+                padding: 14,
+                borderRadius: 12,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "white", fontWeight: "800" }}>
+                📍 Ir a Ubicación
+              </Text>
+            </Pressable>
+
             <Pressable
               onPress={seeOnboardingAgain}
               style={{
@@ -121,7 +190,9 @@ export default function TabsHome() {
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: "white", fontWeight: "800" }}>Cerrar sesión</Text>
+              <Text style={{ color: "white", fontWeight: "800" }}>
+                Cerrar sesión
+              </Text>
             </Pressable>
           </>
         )}

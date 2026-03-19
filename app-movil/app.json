@@ -38,11 +38,22 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "La aplicación necesita acceso a la cámara para tomar fotografías."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "La aplicación necesita acceso a tu ubicación para obtener tu ubicación actual."
+        }
       ]
     ],
     "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
+      "typedRoutes": true
     }
   }
 }
