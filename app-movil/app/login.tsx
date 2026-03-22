@@ -34,14 +34,14 @@ export default function LoginScreen() {
         return;
       }
 
-      // ✅ Guardar EXACTO como lo lee tu Home
       await AsyncStorage.setItem("token", data.token);
       await AsyncStorage.setItem("user", JSON.stringify(data.user));
 
       Alert.alert("✅ Login OK", `Bienvenido/a ${data?.user?.name ?? ""}`);
+
       router.replace("/(tabs)");
     } catch (e) {
-      setMsg("Error de conexión (revisa backend/ngrok/internet).");
+      setMsg("Error de conexión.");
     } finally {
       setLoading(false);
     }
@@ -53,7 +53,9 @@ export default function LoginScreen() {
         Iniciar sesión
       </Text>
 
+      {/* EMAIL */}
       <TextInput
+        testID="input-email"
         placeholder="Correo"
         value={email}
         onChangeText={setEmail}
@@ -63,7 +65,9 @@ export default function LoginScreen() {
         style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
       />
 
+      {/* PASSWORD */}
       <TextInput
+        testID="input-password"
         placeholder="Contraseña"
         value={password}
         onChangeText={setPassword}
@@ -71,9 +75,14 @@ export default function LoginScreen() {
         style={{ borderWidth: 1, marginBottom: 10, padding: 8 }}
       />
 
-      {msg ? <Text style={{ color: "red", marginBottom: 10 }}>{msg}</Text> : null}
+      {/* MENSAJE ERROR */}
+      {msg ? (
+        <Text style={{ color: "red", marginBottom: 10 }}>{msg}</Text>
+      ) : null}
 
+      {/* BOTÓN LOGIN */}
       <Pressable
+        testID="btn-login"
         onPress={login}
         disabled={loading}
         style={{
@@ -90,6 +99,14 @@ export default function LoginScreen() {
         )}
       </Pressable>
 
+      {/* TEXTO ÉXITO (solo para pruebas) */}
+      {!loading && !msg ? (
+        <Text testID="login-success" style={{ marginTop: 10, color: "green" }}>
+          Login listo
+        </Text>
+      ) : null}
+
+      {/* REGISTRO */}
       <Pressable onPress={() => router.replace("/register")} style={{ marginTop: 16 }}>
         <Text style={{ textAlign: "center" }}>
           ¿No tienes cuenta? <Text style={{ fontWeight: "bold" }}>Regístrate</Text>

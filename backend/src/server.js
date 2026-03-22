@@ -2,6 +2,7 @@ require("dotenv").config({
   path: require("path").resolve(__dirname, "../.env"),
 });
 require("dotenv").config();
+
 const app = require("./app");
 const { sequelize, Role } = require("./models");
 
@@ -18,9 +19,9 @@ async function start() {
       await Role.findOrCreate({ where: { name: r } });
     }
 
-    app.listen(process.env.PORT || 4000, "0.0.0.0", () => {
-  console.log("API corriendo");
-});
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`API corriendo en puerto ${PORT}`);
+    });
 
   } catch (error) {
     console.error("❌ Error iniciando el servidor:", error);
