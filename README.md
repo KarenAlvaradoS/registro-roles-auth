@@ -1,89 +1,206 @@
-Proyecto: Autenticación con Roles y JWT
+# Proyecto: Autenticación con Roles y JWT
+
+## Descripción
+
+Aplicación móvil multiplataforma desarrollada con React Native (Expo), integrada con un backend en Node.js y Express, utilizando autenticación con JSON Web Token (JWT), base de datos MySQL y funcionalidades nativas como cámara y geolocalización.
 
 Este proyecto implementa un sistema de autenticación completo con registro, login, roles (admin/user), persistencia de sesión, ruta protegida y cierre de sesión. Incluye backend con Node.js/Express, frontend web y app móvil con Expo (React Native). El sistema está listo para demostración en clase.
 
-A) Creación y estructura del proyecto
+---
+
+## Tecnologías utilizadas
+
+- React Native (Expo)
+- Node.js
+- Express
+- Sequelize
+- MySQL
+- JSON Web Token (JWT)
+- AsyncStorage
+
+---
+
+## A) Creación y estructura del proyecto
+
 El repositorio está organizado en tres módulos principales: backend, frontend web y app móvil. En el backend se usa una estructura por carpetas (controllers, routes, models, middleware, config) para separar responsabilidades. El frontend web consume la API REST. La app móvil (Expo) consume la misma API y guarda la sesión en el dispositivo.
 
-Estructura de carpetas (resumen)
+### Estructura de carpetas (resumen)
 
-backend/src: servidor Express, rutas, controladores, modelos, middleware
+- backend/src: servidor Express, rutas, controladores, modelos, middleware  
+- frontend: interfaz web (index.html, style.css, app.js)  
+- app-movil: aplicación móvil Expo (React Native)  
 
-frontend: interfaz web (index.html, style.css, app.js)
+---
 
-app-movil: aplicación móvil Expo (React Native)
+## B) Configuración de variables de entorno (.env)
 
-B) Configuración de variables de entorno (.env)
-El backend usa un archivo .env para guardar configuraciones sensibles como la conexión a MySQL y la clave JWT. Por seguridad, el .env no se sube a GitHub. En su lugar se incluye un archivo de ejemplo.
+El backend usa un archivo `.env` para guardar configuraciones sensibles como la conexión a MySQL y la clave JWT.
 
-Crear el .env en backend usando el ejemplo
-En la carpeta backend existe un archivo backend/.env.example. Copiarlo y renombrarlo a .env.
-Variables requeridas: PORT, DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME, JWT_SECRET.
+⚠️ Por seguridad, el `.env` no se sube a GitHub. En su lugar se incluye un archivo de ejemplo.
 
-Configurar la URL base de la API en los clientes
-En el frontend web y la app móvil se utiliza una variable API_URL para consumir el backend. Para pruebas en celular se recomienda usar una URL accesible como ngrok o la IP local del computador (por ejemplo http://192.168.x.x:4000
-). No usar localhost desde el celular porque localhost en el celular apunta al propio dispositivo.
+### Crear el .env en backend usando el ejemplo
 
-C) Base de datos, tablas y relación Usuarios-Roles
-El modelo mínimo incluye Usuarios y Roles. Cada usuario pertenece a un rol (admin o user). En la base de datos la tabla Users contiene una clave foránea RoleId que referencia a Roles. El backend crea/actualiza las tablas automáticamente mediante Sequelize (sequelize.sync) al iniciar el servidor y también crea los roles base si no existen (admin y user).
+En la carpeta backend existe un archivo `backend/.env.example`. Copiarlo y renombrarlo a `.env`.
 
-D) Implementación de funcionalidades principales
+### Variables requeridas:
 
-Registro de usuario con selección de rol
+- PORT  
+- DB_HOST  
+- DB_PORT  
+- DB_USER  
+- DB_PASS  
+- DB_NAME  
+- JWT_SECRET  
 
-El registro de usuarios se realiza mediante el endpoint POST /api/auth/register.
-El body de la petición debe incluir los campos name, email, password y roleName.
-El campo roleName es obligatorio y define el rol del usuario (admin o user).
+---
+
+## Configuración de la API
+
+En el frontend web y la app móvil se utiliza una variable `API_URL` para consumir el backend.
+
+⚠️ Importante:
+
+- No usar `localhost` en el celular  
+- Usar:
+  - IP local (ej: http://192.168.x.x:4000 )  
+  - o ngrok  
+
+---
+
+## C) Base de datos, tablas y relación Usuarios-Roles
+
+El modelo mínimo incluye Usuarios y Roles. Cada usuario pertenece a un rol (admin o user).
+
+En la base de datos la tabla Users contiene una clave foránea `RoleId` que referencia a Roles.
+
+El backend crea/actualiza las tablas automáticamente mediante Sequelize (`sequelize.sync`) al iniciar el servidor y también crea los roles base si no existen (admin y user).
+
+---
+
+## D) Implementación de funcionalidades principales
+
+### Registro de usuario con selección de rol
+
+El registro de usuarios se realiza mediante el endpoint:
+
+POST /api/auth/register  
+
+El body de la petición debe incluir los campos:
+
+- name  
+- email  
+- password  
+- roleName (admin o user)  
+
 El backend valida que el rol exista antes de crear el usuario y lo asocia correctamente en la base de datos.
-Endpoint: POST /api/auth/register
-Body requerido: name, email, password, roleName (admin o user). El backend valida el rol y lo asocia al usuario.
 
-Inicio de sesión (login)
-Endpoint: POST /api/auth/login
-Body: email, password
-Respuesta: token JWT y datos del usuario incluyendo role.
+---
 
-Persistencia de sesión y control de acceso a ruta protegida
-El token se guarda en el cliente (localStorage en web y AsyncStorage en móvil). Para acceder a la ruta protegida se envía el token en el header Authorization como Bearer TOKEN.
-Ejemplo: Authorization: Bearer <token>
+### Inicio de sesión (login)
 
-Cierre de sesión y restricciones
-El logout elimina el token guardado. Si no hay token, se bloquea el acceso a la vista o ruta protegida y se muestra un mensaje indicando que el usuario debe iniciar sesión.
+Endpoint: POST /api/auth/login  
 
-Cómo ejecutar el proyecto
+Body:
 
-Backend
+- email  
+- password  
 
-Tener MySQL activo
+Respuesta:
 
-Configurar backend/.env
+- token JWT  
+- datos del usuario incluyendo role  
 
-Instalar dependencias y ejecutar servidor
-Comandos (desde la carpeta backend): npm install y luego (desde backend/src): node server.js
+---
+
+### Persistencia de sesión y control de acceso a ruta protegida
+
+El token se guarda en el cliente:
+
+- Web: localStorage  
+- App móvil: AsyncStorage  
+
+Para acceder a la ruta protegida se envía el token en el header:
+
+Authorization: Bearer TOKEN  
+
+---
+
+### Ruta protegida
+
+Endpoint: GET /api/protected  
+
+Solo accesible con token válido.
+
+---
+
+### Cierre de sesión y restricciones
+
+El logout elimina el token guardado.
+
+Si no hay token, se bloquea el acceso a la ruta protegida y se muestra un mensaje indicando que el usuario debe iniciar sesión.
+
+---
+
+## Funcionalidades nativas
+
+### 📸 Cámara
+Permite capturar imágenes desde la aplicación.
+
+### 📍 Geolocalización
+Permite obtener la ubicación del usuario (latitud y longitud).
+
+### Gestión de permisos
+
+Se manejan correctamente los estados:
+
+- granted  
+- denied  
+- blocked  
+
+---
+
+## Cómo ejecutar el proyecto
+
+### Backend
+
+Tener MySQL activo  
+
+Configurar backend/.env  
+
+Instalar dependencias y ejecutar servidor:
+
+```bash
+npm install
+node src/server.js
 El backend corre por defecto en el puerto 4000.
-
 Frontend Web
-
-Entrar a la carpeta frontend
-
-Levantar servidor estático (por ejemplo npx http-server)
-
-Abrir la URL que muestre la consola
-
+cd frontend
+npx http-server
 App móvil (Expo)
+cd app-movil
+npm install
+npx expo start
 
-Entrar a la carpeta app-movil
+Escanear QR con Expo Go.
 
-Instalar dependencias: npm install
+Configurar API_URL para que apunte al backend accesible desde el celular (ngrok o IP local).
 
-Ejecutar: npx expo start
+Video demostrativo
 
-Escanear QR con Expo Go
+Link del video:
+https://TU-LINK-DE-YOUTUBE
 
-Configurar API_URL para que apunte al backend accesible desde el celular (ngrok o IP local)
+Repositorio
+
+https://github.com/KarenAlvaradoS/registro-roles-auth.git
 
 Notas
+No se suben:
+node_modules
+.env
+.expo
+Los roles admin y user se crean automáticamente al iniciar el backend.
+Autor
 
-No se suben node_modules ni .expo ni .env al repositorio (están ignorados).
-
-Los roles admin y user deben existir; el backend los crea automáticamente al iniciar.
+Estefania Karen Alvarado Santi
+Universidad Estatal Amazónica
