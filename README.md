@@ -188,7 +188,7 @@ Configurar API_URL para que apunte al backend accesible desde el celular (ngrok 
 Video demostrativo
 
 Link del video:
-https://TU-LINK-DE-YOUTUBE
+[https://youtu.be/q6Kk0S_TUeI?si=bxBVUhR5AQgEnJgw  ]
 
 Repositorio
 
